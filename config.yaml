@@ -1,0 +1,67 @@
+# =============================================================
+#  Battlezone Voice Commander - konfigurasjon
+#  Endre verdier her uten å røre koden.
+# =============================================================
+
+gemini:
+  # Modellvalg (juni 2026):
+  #   gemini-3.5-flash      <- default: rask + billig, hører lyd godt. Anbefalt.
+  #   gemini-3.5-pro        <- bytt hit KUN hvis Flash misforstår deg ofte
+  #   gemini-3.1-flash-lite <- billigst/raskest, men svakere på tale-forståelse
+  brain_model: "gemini-3.5-flash"    # hører lyden din og lager handlingsplanen
+  tts_model:   "gemini-3.5-pro-tts"  # stemmen som svarer deg
+  tts_voice:   "Charon"              # prøv: Charon, Kore, Puck, Fenrir, Aoede
+  spoken_language: "norsk"           # språket DU snakker (brukes som hint til modellen)
+
+audio:
+  sample_rate: 16000   # mic-opptak (16 kHz holder for tale)
+  channels: 1
+
+controls:
+  # Hold denne tasten inne mens du snakker (push-to-talk).
+  push_to_talk: "caps lock"
+  # Trykk denne for å avslutte programmet.
+  quit_key: "esc"
+
+# -------------------------------------------------------------
+#  SIKKERHET: start ALLTID i tørrkjøring.
+#  true  = skriver bare ut hvilke taster den VILLE trykket (trygt)
+#  false = sender ekte tastetrykk til spillet
+# -------------------------------------------------------------
+dry_run: true
+
+# Sekunder før en enhet regnes som ferdigbygd (timer-basert).
+# VERIFISER disse i spillet - de er anslag.
+build_times:
+  scout: 12
+  tank: 20
+  thunderbolt: 16
+  default: 15
+
+# -------------------------------------------------------------
+#  TASTESEKVENSER for Battlezone 98 sitt command interface.
+#  Talltastene 1-0 åpner kommandomenyene. "Follow Me" = 1, "Hold" = 4.
+#
+#  build.<enhet> = tastene som bygger den enheten via Recycler/Factory.
+#  >>> Disse er PLASSHOLDERE. Vi fyller dem inn sammen når du
+#      leser av din egen Input Configuration in-game. <<<
+#  Bruk tørrkjøring for å se rekkefølgen før du tester på ekte.
+# -------------------------------------------------------------
+keymap:
+  # Velg din egen enhet (så "follow me" gjelder deg)
+  select_self: ["f1"]
+
+  # Bygging - PLASSHOLDERE, må verifiseres in-game:
+  build:
+    scout:       ["VERIFISER", "VERIFISER"]
+    tank:        ["VERIFISER", "VERIFISER"]
+    thunderbolt: ["VERIFISER", "VERIFISER"]
+
+  # Standardkommandoer (disse er trygge defaults i BZ98):
+  follow_me: ["1"]
+  hold:      ["4"]
+  attack:    ["3"]   # verifiser
+  stop:      ["4"]   # "hold" fungerer som stopp
+
+  # Hvordan velge nylig bygde enheter (plassholder):
+  select_last_built: ["VERIFISER"]
