@@ -10,7 +10,7 @@ venter på at enhetene bygges, og **snakker tilbake** når de er ferdige.
   Mikrofon ──► [ LYTT ]  push-to-talk-opptak        (listen.py)
                    │
                    ▼
-            [ TOLK ]  Gemini 3.5 Pro hører lyden     (brain.py)
+            [ TOLK ]  Gemini 3.5 Flash hører lyden   (brain.py)
                    │   og lager en handlingsplan
                    ▼
             [ PLANLEGG ]  ordre → taster + ventetid  (commands.py)
@@ -26,8 +26,8 @@ vil. Tastene bor i `config.yaml`, så du kan endre dem uten å røre koden.
 
 | Lag | Modell |
 |-----|--------|
-| Tale → handling | `gemini-3.5-pro` (hører lyd + function calling) |
-| Stemme tilbake | `gemini-3.5-pro-tts` |
+| Tale → handling | `gemini-3.5-flash` (hører lyd + function calling) |
+| Stemme tilbake | `gemini-3.1-flash-tts-preview` |
 
 ## Oppsett (engangs, ~5 min)
 
@@ -55,11 +55,18 @@ python src/main.py
 
 ## Det vi må gjøre sammen før det funker på ekte
 
-Bygge-tastene i `config.yaml` (`keymap.build.*` og `select_last_built`) er
-**plassholdere** merket `VERIFISER`. Battlezone bygger enheter via et
-kommando-menysystem (talltastene 1–0), og den nøyaktige sekvensen avhenger
-av din Input Configuration. Vi leser den av in-game og fyller den inn —
-tørrkjøringsmodus gjør at vi kan teste rekkefølgen helt trygt.
+Bygge-tastene i `config.yaml` (`keymap.build.*`) har nå **kvalifiserte
+forslag** basert på BZ98s standardoppsett:
+
+- **5** åpner Recycler-byggmenyen, **6** åpner Factory-byggmenyen.
+- Det andre tallet i hver sekvens er PLASSEN enheten har i menyen — det
+  er et anslag du må lese av og bekrefte in-game.
+- `select_last_built` er satt til **Ctrl+1** (alle offensive enheter).
+
+Battlezone bygger enheter via et kommando-menysystem (talltastene 1–0),
+og den nøyaktige plasseringen avhenger av din Input Configuration / faksjon.
+Kjør med `dry_run: true` og sjekk at sekvensen i terminalen matcher menyen
+din før du setter `dry_run: false`.
 
 Defaults som allerede stemmer i BZ98: **Follow Me = 1**, **Hold = 4**.
 

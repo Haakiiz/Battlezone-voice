@@ -35,9 +35,23 @@ class Executor:
                 continue
             if self.dry_run:
                 print(f"   [TØRRKJØRING] ville trykket: {key}")
+            elif "+" in key:
+                self._press_chord(key)          # f.eks. "ctrl+1"
             else:
                 pydirectinput.press(key)
             time.sleep(self.key_gap)
+
+    @staticmethod
+    def _press_chord(combo: str) -> None:
+        """Trykk en tastekombinasjon som 'ctrl+1': hold modifikatorene,
+        trykk siste tast, slipp modifikatorene igjen."""
+        parts = [p.strip() for p in combo.split("+") if p.strip()]
+        *mods, last = parts
+        for mod in mods:
+            pydirectinput.keyDown(mod)
+        pydirectinput.press(last)
+        for mod in reversed(mods):
+            pydirectinput.keyUp(mod)
 
     def run(self, steps: list[Step]) -> None:
         for step in steps:

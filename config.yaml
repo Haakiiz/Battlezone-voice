@@ -6,10 +6,11 @@
 gemini:
   # Modellvalg (juni 2026):
   #   gemini-3.5-flash      <- default: rask + billig, hører lyd godt. Anbefalt.
-  #   gemini-3.5-pro        <- bytt hit KUN hvis Flash misforstår deg ofte
+  #   gemini-3.1-pro        <- bytt hit KUN hvis Flash misforstår deg ofte
   #   gemini-3.1-flash-lite <- billigst/raskest, men svakere på tale-forståelse
-  brain_model: "gemini-3.5-flash"    # hører lyden din og lager handlingsplanen
-  tts_model:   "gemini-3.5-pro-tts"  # stemmen som svarer deg
+  brain_model: "gemini-3.5-flash"            # hører lyden din og lager handlingsplanen
+  # TTS: gemini-3.1-flash-tts-preview er Googles nåværende tale-modell (juni 2026).
+  tts_model:   "gemini-3.1-flash-tts-preview"  # stemmen som svarer deg
   tts_voice:   "Charon"              # prøv: Charon, Kore, Puck, Fenrir, Aoede
   spoken_language: "norsk"           # språket DU snakker (brukes som hint til modellen)
 
@@ -40,28 +41,38 @@ build_times:
 
 # -------------------------------------------------------------
 #  TASTESEKVENSER for Battlezone 98 sitt command interface.
-#  Talltastene 1-0 åpner kommandomenyene. "Follow Me" = 1, "Hold" = 4.
 #
-#  build.<enhet> = tastene som bygger den enheten via Recycler/Factory.
-#  >>> Disse er PLASSHOLDERE. Vi fyller dem inn sammen når du
-#      leser av din egen Input Configuration in-game. <<<
-#  Bruk tørrkjøring for å se rekkefølgen før du tester på ekte.
+#  Slik fungerer bygging i BZ98 Redux (NSDF-standardoppsett):
+#    Talltast 5  = åpner RECYCLER sin byggmeny
+#    Talltast 6  = åpner FACTORY sin byggmeny
+#    Talltast 7  = åpner CONSTRUCTOR (bygninger)
+#  Når menyen er åpen velger du enheten med tallet for PLASSEN den
+#  har i lista (kostnaden vises i blått til høyre). Lette enheter
+#  (scout/scavenger) bygges fra Recycler; tunge (tank/bomber) fra Factory.
+#
+#  build.<enhet> = [ <produsent-tast>, <plass-i-meny> ]
+#  >>> Produsent-tasten (5/6) er BZ98-standard. Det ANDRE tallet er
+#      et kvalifisert ANSLAG for plassen i menyen - les av din egen
+#      meny in-game og rett tallet. dry_run: true gjør dette helt trygt:
+#      du ser rekkefølgen i terminalen før noe sendes til spillet. <<<
 # -------------------------------------------------------------
 keymap:
   # Velg din egen enhet (så "follow me" gjelder deg)
   select_self: ["f1"]
 
-  # Bygging - PLASSHOLDERE, må verifiseres in-game:
+  # Bygging - produsent-tast er sikker, plass-i-meny må verifiseres in-game:
   build:
-    scout:       ["VERIFISER", "VERIFISER"]
-    tank:        ["VERIFISER", "VERIFISER"]
-    thunderbolt: ["VERIFISER", "VERIFISER"]
+    scout:       ["5", "2"]   # Recycler -> anslått plass 2 (slot 1 er ofte Scavenger)
+    tank:        ["6", "1"]   # Factory  -> anslått plass 1
+    thunderbolt: ["6", "2"]   # Factory  -> anslått plass 2 (bomber)
 
-  # Standardkommandoer (disse er trygge defaults i BZ98):
+  # Standardkommandoer (BZ98-defaults):
   follow_me: ["1"]
   hold:      ["4"]
   attack:    ["3"]   # verifiser
   stop:      ["4"]   # "hold" fungerer som stopp
 
-  # Hvordan velge nylig bygde enheter (plassholder):
-  select_last_built: ["VERIFISER"]
+  # Velg nylig bygde enheter før "follow me". CTRL+1 = alle offensive
+  # enheter i BZ98, som inkluderer nybygde kampenheter. Skrives som
+  # chord med "+". Bytt til ["f1"] e.l. hvis du heller vil styre deg selv.
+  select_last_built: ["ctrl+1"]
