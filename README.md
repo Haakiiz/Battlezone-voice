@@ -71,6 +71,19 @@ python src/main.py
 - Hold **Caps Lock** og si en kommando. Slipp for å sende.
 - Avslutt med **Esc**.
 
+### Får ikke Caps Lock til å virke mens spillet kjører?
+
+`keyboard`-biblioteket bruker en **global** tastaturhook, så du trenger
+*ikke* ha terminalen/PyCharm i fokus — start programmet én gang og alt-tab
+inn i spillet. Hvis tasten likevel ikke registreres mens BZ98 har fokus:
+
+1. **Kjør terminalen som administrator.** Hvis spillet kjører som admin må
+   Python gjøre det også, ellers blokkerer Windows (UIPI) tastetrykkene.
+2. **Kjør BZ98 i «Windowed»/«Borderless», ikke ekte fullskjerm** — exclusive
+   fullscreen kan sluke globale hooks og ødelegger lyd-avspilling + alt-tab.
+3. Caps Lock er en toggle-tast; vil du ha en renere PTT-tast, endre
+   `controls.push_to_talk` i `config.yaml` (f.eks. `"right ctrl"`).
+
 > ⚠️ Programmet starter i **tørrkjøring** (`dry_run: true` i config). Da
 > sender den **ingen ekte tastetrykk** — den skriver bare ut hva den ville
 > gjort. Test først her, verifiser at sekvensene stemmer, og sett deretter
