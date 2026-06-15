@@ -57,17 +57,22 @@ ORDERS_TOOL = {
                         "action": {
                             "type": "string",
                             "enum": [
-                                "build",     # bygg enhet (Recycler/Factory)
-                                "produce",   # produser våpen/spesial (Armory)
-                                "follow",    # enheter følger deg
-                                "go",        # flytt til der du ser / til nav
-                                "attack",    # angrip mål
-                                "hold",      # hold posisjon
-                                "stop",      # stopp
-                                "defend",    # forsvar posisjon/deg
-                                "scavenge",  # scavengers samler scrap
-                                "get",       # plukk opp / hent objekt
-                                "nav",       # plasser nav-beacon
+                                "build",         # bygg enhet (Recycler/Factory)
+                                "produce",       # produser våpen/spesial (Armory)
+                                "follow",        # Follow Me
+                                "follow_close",  # Follow Close
+                                "go",            # Go to Nav / flytt
+                                "attack",        # angrip mål
+                                "hunt",          # Hunt - søk opp fiender
+                                "defend",        # Defend - holder posisjon
+                                "hold",          # = Defend (ingen egen hold)
+                                "stop",          # = Defend
+                                "scavenge",      # scavengers samler scrap
+                                "recycle",       # Recycle - gjenvinn enhet
+                                "pickup",        # Pick Me Up
+                                "repair",        # Get Repair
+                                "reload",        # Get Reload
+                                "nav",           # plasser nav-beacon
                             ],
                             "description": "Hva som skal gjøres.",
                         },
@@ -109,25 +114,35 @@ ORDERS_TOOL = {
 # Hvilken enhetsgruppe en ordre gjelder hvis brukeren ikke spesifiserer det.
 DEFAULT_TARGET = {
     "follow": "all_offensive",
+    "follow_close": "all_offensive",
     "go": "all_offensive",
     "attack": "all_offensive",
+    "hunt": "all_offensive",
+    "defend": "all_offensive",
     "hold": "all_offensive",
     "stop": "all_offensive",
-    "defend": "all_offensive",
+    "recycle": "all_offensive",
+    "repair": "all_offensive",
+    "reload": "all_offensive",
+    "pickup": "all_utility",
     "scavenge": "scavengers",
-    "get": "all_utility",
 }
 
 # Det stemmen sier når en kommando er utført.
 CONFIRM = {
     "follow": "De følger deg nå.",
+    "follow_close": "Følger tett.",
     "go": "På vei.",
     "attack": "Angriper.",
+    "hunt": "Jakter fiender.",
+    "defend": "Forsvarer.",
     "hold": "Holder posisjon.",
     "stop": "Stopper.",
-    "defend": "Forsvarer.",
+    "recycle": "Sender til gjenvinning.",
+    "pickup": "Ber om transport.",
+    "repair": "Drar for reparasjon.",
+    "reload": "Drar for å lade om.",
     "scavenge": "Scavengerne samler scrap.",
-    "get": "Henter.",
     "nav": "Nav-beacon plassert.",
 }
 
