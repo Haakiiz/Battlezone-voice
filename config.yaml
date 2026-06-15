@@ -115,9 +115,11 @@ keymap:
   # VERIFISERT fra enhetens ordremeny. Menyen vises når enheter er
   # valgt - ingen Tab nødvendig (Tab = Cancel der).
   commands:
-    follow:       ["1"]   # Follow Me
+    follow:       ["1"]   # Follow Me - følger deg, rykker fram mot fiender
     go:           ["2"]   # Go to Nav
-    attack:       ["3"]   # Attack
+    attack:       ["3", "1"]  # Attack: 3 åpner liste over nærmeste fiender,
+                              # 1 = velg den nærmeste (øverst). Endre 2. tall
+                              # for å treffe lenger ned i lista.
     pickup:       ["4"]   # Pick Me Up (grået ut når ikke relevant)
     repair:       ["5"]   # Get Repair (grået ut)
     reload:       ["6"]   # Get Reload (grået ut)
