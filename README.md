@@ -10,7 +10,7 @@ venter på at enhetene bygges, og **snakker tilbake** når de er ferdige.
   Mikrofon ──► [ LYTT ]  push-to-talk-opptak        (listen.py)
                    │
                    ▼
-            [ TOLK ]  Gemini 3.5 Pro hører lyden     (brain.py)
+            [ TOLK ]  Gemini 3.5 Flash hører lyden   (brain.py)
                    │   og lager en handlingsplan
                    ▼
             [ PLANLEGG ]  ordre → taster + ventetid  (commands.py)
@@ -26,8 +26,31 @@ vil. Tastene bor i `config.yaml`, så du kan endre dem uten å røre koden.
 
 | Lag | Modell |
 |-----|--------|
-| Tale → handling | `gemini-3.5-pro` (hører lyd + function calling) |
-| Stemme tilbake | `gemini-3.5-pro-tts` |
+| Tale → handling | `gemini-3.5-flash` (hører lyd + function calling) |
+| Stemme tilbake | `gemini-3.1-flash-tts-preview` |
+
+## Kommandoer du kan gi med stemmen
+
+Alt i BZ98s kommandomeny er tilgjengelig — Gemini oversetter fritt norsk
+til disse handlingene (`commands.py:ORDERS_TOOL`):
+
+| Du sier (eksempel) | Handling |
+|--------------------|----------|
+| "bygg to speidere" | `build` (Recycler/Factory) |
+| "lag en day wrecker" | `produce` (Armory-våpen) |
+| "alle skal følge meg" | `follow` |
+| "dra dit borte" / "til navet" | `go` |
+| "angrip basen" | `attack` |
+| "hold posisjon" / "stopp" | `hold` / `stop` |
+| "forsvar her" | `defend` |
+| "scavengerne skal samle scrap" | `scavenge` |
+| "plukk opp den" | `get` |
+| "sett en nav-beacon" | `nav` |
+
+Du kan også styre **hvem** ordren gjelder ("be *alle* følge meg",
+"*scavengerne* skal samle") — det blir `target` i ordren. Hvilke taster
+hver handling sender bor i `config.yaml` under `keymap`, så du kan legge
+til eller endre kommandoer uten å røre koden.
 
 ## Oppsett (engangs, ~5 min)
 
@@ -55,11 +78,18 @@ python src/main.py
 
 ## Det vi må gjøre sammen før det funker på ekte
 
-Bygge-tastene i `config.yaml` (`keymap.build.*` og `select_last_built`) er
-**plassholdere** merket `VERIFISER`. Battlezone bygger enheter via et
-kommando-menysystem (talltastene 1–0), og den nøyaktige sekvensen avhenger
-av din Input Configuration. Vi leser den av in-game og fyller den inn —
-tørrkjøringsmodus gjør at vi kan teste rekkefølgen helt trygt.
+Bygge-tastene i `config.yaml` (`keymap.build.*`) har nå **kvalifiserte
+forslag** basert på BZ98s standardoppsett:
+
+- **5** åpner Recycler-byggmenyen, **6** åpner Factory-byggmenyen.
+- Det andre tallet i hver sekvens er PLASSEN enheten har i menyen — det
+  er et anslag du må lese av og bekrefte in-game.
+- `select_last_built` er satt til **Ctrl+1** (alle offensive enheter).
+
+Battlezone bygger enheter via et kommando-menysystem (talltastene 1–0),
+og den nøyaktige plasseringen avhenger av din Input Configuration / faksjon.
+Kjør med `dry_run: true` og sjekk at sekvensen i terminalen matcher menyen
+din før du setter `dry_run: false`.
 
 Defaults som allerede stemmer i BZ98: **Follow Me = 1**, **Hold = 4**.
 
