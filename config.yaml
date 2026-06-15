@@ -36,23 +36,23 @@ dry_run: true
 # ANSLAG - bytt dem ut med de eksakte tidene du leser av in-game.
 build_times:
   # Recycler:
-  scavenger: 12
-  turret: 14
-  fighter: 12        # CCA-speider
-  scout: 12          # alias
-  constructor: 16
+  scavenger: 5       # bekreftet
+  turret: 6          # anslag
+  fighter: 5         # anslag (CCA-speider)
+  scout: 5           # alias
+  constructor: 8     # anslag
   # Factory:
-  tank: 20
-  light_tank: 16
-  howitzer: 22
-  minelayer: 14
-  rocket_tank: 20
-  apc: 16
-  bomber: 22
-  thunderbolt: 22    # alias for bomber
-  walker: 30
-  fury: 32
-  default: 18
+  tank: 10           # bekreftet
+  light_tank: 7      # bekreftet
+  howitzer: 15       # bekreftet
+  minelayer: 7       # anslag
+  rocket_tank: 10    # bekreftet
+  apc: 8             # anslag
+  bomber: 20         # bekreftet
+  thunderbolt: 20    # alias for bomber
+  walker: 15         # bekreftet
+  fury: 25           # anslag (tyngst)
+  default: 10
 
 # -------------------------------------------------------------
 #  TASTESEKVENSER for Battlezone 98 sitt command interface.
