@@ -57,31 +57,45 @@ ORDERS_TOOL = {
                         "action": {
                             "type": "string",
                             "enum": [
-                                "build",         # bygg enhet (Recycler/Factory)
-                                "produce",       # produser våpen/spesial (Armory)
-                                "follow",        # Follow Me
-                                "follow_close",  # Follow Close
-                                "go",            # Go to Nav / flytt
-                                "attack",        # angrip mål
-                                "hunt",          # Hunt - søk opp fiender
-                                "defend",        # Defend - holder posisjon
-                                "hold",          # = Defend (ingen egen hold)
-                                "stop",          # = Defend
-                                "scavenge",      # scavengers samler scrap
-                                "recycle",       # Recycle - gjenvinn enhet
-                                "pickup",        # Pick Me Up
-                                "repair",        # Get Repair
-                                "reload",        # Get Reload
-                                "nav",           # plasser nav-beacon
+                                "build",        # bygg enhet/bygning (Recycler/Factory/Constructor)
+                                "produce",      # produser våpen/spesial (Armory)
+                                "follow",       # enheter følger deg
+                                "follow_close", # følg tett
+                                "go",           # flytt til der du ser / til nav
+                                "attack",       # angrip mål
+                                "hunt",         # søk opp og angrip fiender
+                                "hold",         # hold posisjon
+                                "stop",         # stopp
+                                "defend",       # forsvar posisjon/deg
+                                "scavenge",     # scavengers samler scrap
+                                "pickup",       # plukk opp / hent objekt
+                                "repair",       # be enhet om reparasjon
+                                "reload",       # be enhet om ammo
+                                "recycle",      # send enhet til gjenvinning
+                                "nav",          # plasser nav-beacon
                             ],
                             "description": "Hva som skal gjøres.",
                         },
                         "unit": {
                             "type": "string",
                             "description": (
-                                "Hva som skal bygges/produseres, f.eks. 'scout', "
-                                "'tank', 'scavenger', 'constructor', 'walker', "
-                                "'day_wrecker'. Kun for action=build eller produce."
+                                "Hva som skal bygges/produseres. Kun for "
+                                "action=build eller produce. Gyldige navn:\n"
+                                "BYGG (build): scavenger, turret, fighter (=scout), "
+                                "tank, light_tank, tug, howitzer, minelayer, "
+                                "rocket_tank, apc, bomber, walker; bygninger: "
+                                "factory, armory, constructor, power_generator, "
+                                "gun_tower, comm_tower, barracks, silo, "
+                                "supply_depot, hangar.\n"
+                                "PRODUSER (produce, fra Armory): day_wrecker, "
+                                "nav_beacon, armory_repair, armory_ammo; kanoner: "
+                                "minigun, at_stabber, sp_stabber, mag_cannon, "
+                                "flash_cannon; raketter: shadow_missile, "
+                                "thermal_hornet, comet_cruise_missile, tag_cannon, "
+                                "sandbag_missile, rocket_bomb; mortar: mortar, mdm, "
+                                "pop_gun, splinter; spesial: solar_flare, m_curtain, "
+                                "mits, proximity_mine, thumper, red_field_generator, "
+                                "phantom_vir, site_camera."
                             ),
                         },
                         "count": {

@@ -36,16 +36,24 @@ til disse handlingene (`commands.py:ORDERS_TOOL`):
 
 | Du sier (eksempel) | Handling |
 |--------------------|----------|
-| "bygg to speidere" | `build` (Recycler/Factory) |
+| "bygg to speidere" | `build` (Recycler/Factory/Constructor) |
 | "lag en day wrecker" | `produce` (Armory-våpen) |
-| "alle skal følge meg" | `follow` |
+| "alle skal følge meg" | `follow` / `follow_close` |
 | "dra dit borte" / "til navet" | `go` |
 | "angrip basen" | `attack` |
+| "jakt på fiender" | `hunt` |
 | "hold posisjon" / "stopp" | `hold` / `stop` |
 | "forsvar her" | `defend` |
 | "scavengerne skal samle scrap" | `scavenge` |
-| "plukk opp den" | `get` |
+| "plukk opp den" | `pickup` |
+| "dra og reparer" / "fyll ammo" | `repair` / `reload` |
+| "send den til gjenvinning" | `recycle` |
 | "sett en nav-beacon" | `nav` |
+
+**Hva kan bygges/produseres?** Hele BZ98-menytreet ligger i `config.yaml`
+under `keymap.build` (Recycler/Factory/Constructor) og `keymap.produce`
+(Armory med under­menyer for kanoner, raketter, mortar og spesialvåpen).
+Si f.eks. "bygg en walker", "lag et gun tower", "produser en flash cannon".
 
 Du kan også styre **hvem** ordren gjelder ("be *alle* følge meg",
 "*scavengerne* skal samle") — det blir `target` i ordren. Hvilke taster
@@ -68,10 +76,15 @@ til eller endre kommandoer uten å røre koden.
 python src/main.py
 ```
 
-- Hold **Caps Lock** og si en kommando. Slipp for å sende.
+- Hold **push-to-talk-tasten** (`controls.push_to_talk` i config, standard
+  satt der) og si en kommando. Slipp for å sende.
 - Avslutt med **Esc**.
 
-### Får ikke Caps Lock til å virke mens spillet kjører?
+> 💡 Push-to-talk leses nivåbasert (`keyboard.is_pressed`), så modifikator­taster
+> som **venstre Shift/Ctrl** fungerer fint. (Tidligere brukte vi `keyboard.wait`,
+> som hang etter noen trykk med modifikatortaster.)
+
+### Får ikke push-to-talk til å virke mens spillet kjører?
 
 `keyboard`-biblioteket bruker en **global** tastaturhook, så du trenger
 *ikke* ha terminalen/PyCharm i fokus — start programmet én gang og alt-tab
@@ -81,8 +94,9 @@ inn i spillet. Hvis tasten likevel ikke registreres mens BZ98 har fokus:
    Python gjøre det også, ellers blokkerer Windows (UIPI) tastetrykkene.
 2. **Kjør BZ98 i «Windowed»/«Borderless», ikke ekte fullskjerm** — exclusive
    fullscreen kan sluke globale hooks og ødelegger lyd-avspilling + alt-tab.
-3. Caps Lock er en toggle-tast; vil du ha en renere PTT-tast, endre
-   `controls.push_to_talk` i `config.yaml` (f.eks. `"right ctrl"`).
+3. Unngå toggle-taster som Caps Lock som PTT; en ren tast (f.eks.
+   `"left shift"` / `"right ctrl"`) er bedre. Endre `controls.push_to_talk`
+   i `config.yaml`.
 
 > ⚠️ Programmet starter i **tørrkjøring** (`dry_run: true` i config). Da
 > sender den **ingen ekte tastetrykk** — den skriver bare ut hva den ville
@@ -91,20 +105,22 @@ inn i spillet. Hvis tasten likevel ikke registreres mens BZ98 har fokus:
 
 ## Det vi må gjøre sammen før det funker på ekte
 
-Bygge-tastene i `config.yaml` (`keymap.build.*`) har nå **kvalifiserte
-forslag** basert på BZ98s standardoppsett:
+Menyene i `config.yaml` (`keymap.build` / `keymap.produce`) er fylt inn fra
+[StrategyWiki](https://strategywiki.org/wiki/Battlezone_(Activision)/CCA_units)
+(NSDF og CCA har identiske menyer, kun andre navn):
 
-- **5** åpner Recycler-byggmenyen, **6** åpner Factory-byggmenyen.
-- Det andre tallet i hver sekvens er PLASSEN enheten har i menyen — det
-  er et anslag du må lese av og bekrefte in-game.
-- `select_last_built` er satt til **Ctrl+1** (alle offensive enheter).
+- **5** = Recycler, **6** = Factory (bekreftet). **7** = Armory og
+  **8** = Constructor er standard utvalgstaster — *verifiser in-game*.
+- Andre tallet i hver sekvens er PLASSEN i menyen; Armory-våpen har et
+  tredje tall for under­menyen (f.eks. `flash_cannon: ["7","6","5"]`).
+- **Constructor-bygninger** (gun tower, barracks osv.) kan ikke plasseres
+  helt automatisk: boten trykker tast + slot, men *du* må sikte og trykke
+  **Space** for å sette ned bygningen.
 
-Battlezone bygger enheter via et kommando-menysystem (talltastene 1–0),
-og den nøyaktige plasseringen avhenger av din Input Configuration / faksjon.
 Kjør med `dry_run: true` og sjekk at sekvensen i terminalen matcher menyen
 din før du setter `dry_run: false`.
 
-Defaults som allerede stemmer i BZ98: **Follow Me = 1**, **Hold = 4**.
+Defaults som allerede stemmer i BZ98: **Follow Me = 1**, **Go to Nav = 2**.
 
 ## Filer
 

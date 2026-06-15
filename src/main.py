@@ -3,7 +3,7 @@ main.py
 -------
 Limet som binder alt sammen. Push-to-talk-loop:
 
-  1. Hold push-to-talk-tasten (caps lock) og si en kommando
+  1. Hold push-to-talk-tasten (se config.yaml) og si en kommando
   2. Gemini hører lyden og lager en handlingsplan
   3. Planlegger gjør planen om til taster + ventetid + talemeldinger
   4. Executor spiller det av (tørrkjøring som standard)
@@ -16,10 +16,9 @@ import sys
 from pathlib import Path
 
 import yaml
-import keyboard
 from dotenv import load_dotenv
 
-from listen import record_while_held
+from listen import record_while_held, wait_for_ptt
 from brain import Brain
 from commands import CommandPlanner
 from executor import Executor
@@ -56,24 +55,27 @@ def main() -> None:
     print("=" * 60)
 
     while True:
-        if keyboard.is_pressed(quit_key):
+        print(f"\n🎙️  Hold '{ptt}' og gi en kommando...")
+        if not wait_for_ptt(ptt, quit_key):
             print("\nAvslutter. Ha det, sjef.")
             break
 
-        print(f"\n🎙️  Hold '{ptt}' og gi en kommando...")
-        pcm = record_while_held(ptt, sample_rate)
-        if pcm.size == 0:
-            continue
+        try:
+            pcm = record_while_held(ptt, sample_rate)
+            if pcm.size == 0:
+                continue
 
-        print("🧠  Tolker...")
-        orders = brain.understand(pcm)
-        if not orders:
-            print("   (forsto ikke kommandoen - prøv igjen)")
-            continue
+            print("🧠  Tolker...")
+            orders = brain.understand(pcm)
+            if not orders:
+                print("   (forsto ikke kommandoen - prøv igjen)")
+                continue
 
-        print(f"   Forsto: {orders}")
-        steps = planner.plan(orders)
-        executor.run(steps)
+            print(f"   Forsto: {orders}")
+            steps = planner.plan(orders)
+            executor.run(steps)
+        except Exception as exc:                  # aldri la én feil drepe løkka
+            print(f"   ⚠️  Feil under behandling: {exc!r} - klar for neste kommando.")
 
 
 if __name__ == "__main__":

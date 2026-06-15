@@ -14,7 +14,7 @@ that way.
 ```bash
 pip install -r requirements.txt          # google-genai, sounddevice, keyboard, pydirectinput, PyYAML, python-dotenv
 cp .env.example .env                      # then paste a Gemini key from aistudio.google.com/apikey
-python src/main.py                        # hold Caps Lock to talk, Esc to quit
+python src/main.py                        # hold push-to-talk key (config.yaml) to talk, Esc to quit
 ```
 
 There is **no test suite, linter, or build step**. Sanity-check changes with:
@@ -46,6 +46,13 @@ via the `execute_orders` function-calling tool (schema in `commands.py:ORDERS_TO
 them up in `config.yaml`. So changing key bindings or build timings means editing
 `config.yaml`, never the Python.
 
+**Push-to-talk gotcha** (`listen.py`): detect the PTT key with level-based
+`keyboard.is_pressed()` polling, **never** `keyboard.wait()`. `wait()` is
+hotkey-based and silently stops firing for bare modifier keys (shift/ctrl/alt)
+after a few presses, hanging the loop. `main.py` calls `wait_for_ptt()` (which
+also returns False on the quit key) and wraps each iteration in try/except so one
+error never kills the loop.
+
 Three low-level step types (`commands.py`): `KeyStep`, `WaitStep`, `SayStep`.
 `executor.py` is the only thing that interprets them.
 
@@ -62,14 +69,23 @@ timer-based "unit is finished" estimates that drive `WaitStep`).
   (not scrap-dependent); the current values are estimates pending the user's
   in-game numbers.
 - The `keymap` is **data-driven** — adding/changing a command means editing
-  config, and `commands.py:CommandPlanner` consumes these sections generically:
-  - `keymap.build.<unit>` / `keymap.produce.<item>` = `[<producer/armory key>, <menu slot>]`
-    (5 = Recycler, 6 = Factory; producer keys are BZ98 defaults, slots are estimates).
+  config, and `commands.py:CommandPlanner` consumes these sections generically.
+  Each value is a list of key taps pressed in order, so menus of any depth work
+  (`executor.py` just presses each key with a small gap):
+  - `keymap.build.<unit>` / `keymap.produce.<item>` = `[<producer/select key>, <menu slot>, ...]`.
+    Producers: 5 = Recycler, 6 = Factory, 7 = Armory, 8 = Constructor. 5/6 are
+    confirmed; 7/8 are the standard select keys (verify in-game). Slots come from
+    [StrategyWiki](https://strategywiki.org/wiki/Battlezone_(Activision)/CCA_units)
+    (NSDF == CCA menus). Armory weapons live in **sub-menus**, so they are
+    3-key sequences, e.g. `flash_cannon: ["7", "6", "5"]`.
+  - **Constructor structures** (`gun_tower`, `barracks`, …) only press select+slot;
+    the player must then aim and press **Space** to place them — not fully automatable.
   - `keymap.select.<target>` = how to select a unit group before an order
     (`all_offensive` = `ctrl+1`, etc.). Orders carry an optional `target`.
-  - `keymap.commands.<action>` = the order key (`follow`/`hold` are confirmed
-    BZ98 defaults; the rest are estimates). `command_menu_key` (e.g. `tab`) is
-    pressed first if set; `nav_beacon` is a standalone key.
+  - `keymap.commands.<action>` = the order key, verified from the in-game unit
+    order menu (no Tab needed — Tab = Cancel there). `attack` is a 2-key sequence
+    (`["3", "1"]` = open enemy list, pick nearest). `command_menu_key` (e.g. `tab`)
+    is pressed first if set; `nav_beacon` is a standalone key for the `nav` action.
 - Chord strings use `+` (e.g. `"ctrl+1"`), handled by `executor.py:_press_chord`;
   plain entries are single key taps. `DEFAULT_TARGET`/`CONFIRM` in `commands.py`
   set the fallback selection and spoken reply per action.

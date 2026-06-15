@@ -20,7 +20,7 @@ audio:
 
 controls:
   # Hold denne tasten inne mens du snakker (push-to-talk).
-  push_to_talk: "caps lock"
+  push_to_talk: "left shift"
   # Trykk denne for å avslutte programmet.
   quit_key: "esc"
 
@@ -29,29 +29,39 @@ controls:
 #  true  = skriver bare ut hvilke taster den VILLE trykket (trygt)
 #  false = sender ekte tastetrykk til spillet
 # -------------------------------------------------------------
-dry_run: true
+dry_run: false
 
 # Sekunder før en enhet regnes som ferdigbygd (timer-basert).
 # Hver enhet har en FAST byggetid i BZ98. Verdiene under er foreløpige
 # ANSLAG - bytt dem ut med de eksakte tidene du leser av in-game.
 build_times:
-  # Recycler:
+  # Recycler-enheter:
   scavenger: 5       # bekreftet
   turret: 6          # anslag
-  fighter: 5         # anslag (CCA-speider)
-  scout: 5           # alias
-  constructor: 8     # anslag
-  # Factory:
-  tank: 10           # bekreftet
-  light_tank: 7      # bekreftet
-  howitzer: 15       # bekreftet
-  minelayer: 7       # anslag
-  rocket_tank: 10    # bekreftet
+  fighter: 5         # anslag (CCA: Flanker)
+  scout: 5           # alias for fighter
+  # Factory-enheter:
+  tank: 10           # bekreftet (CCA: Czar)
+  light_tank: 7      # bekreftet (CCA: Stoli)
+  tug: 6             # anslag (CCA: Tractor)
+  howitzer: 15       # bekreftet (CCA: Cannoneer)
+  minelayer: 7       # anslag (CCA: Molotov)
+  rocket_tank: 10    # bekreftet (CCA: Tusker)
   apc: 8             # anslag
-  bomber: 20         # bekreftet
+  bomber: 20         # bekreftet (CCA: Grendel)
   thunderbolt: 20    # alias for bomber
-  walker: 15         # bekreftet
-  fury: 25           # anslag (tyngst)
+  walker: 15         # bekreftet (CCA: Golem)
+  # Bygninger (Constructor bygger på få sek - anslag):
+  factory: 8         # anslag (Unit Factory / MUF)
+  armory: 8          # anslag (SLF)
+  constructor: 8     # anslag (Erector)
+  power_generator: 4 # anslag
+  gun_tower: 4       # anslag
+  comm_tower: 4      # anslag
+  barracks: 4        # anslag
+  silo: 4            # anslag
+  supply_depot: 4    # anslag
+  hangar: 4          # anslag
   default: 10
 
 # -------------------------------------------------------------
@@ -82,34 +92,82 @@ keymap:
     scavengers:    ["ctrl+3"]  # samme gruppe som utility
     last_built:    ["ctrl+1"]  # nybygde kampenheter havner her
 
-  # --- BYGGING fra Recycler (5) / Factory (6) ----------------------
-  # VERIFISERT fra in-game-menyene (CCA). [ <produsent-tast>, <plass> ].
+  # --- BYGGING ----------------------------------------------------
+  # Kilde: strategywiki.org/wiki/Battlezone_(Activision)/CCA_units
+  # NSDF og CCA har IDENTISKE menyer (kun andre navn/modeller).
+  # [ <produsent/velg-tast>, <plass> (+ ev. flere for undermeny) ]
+  # Produsent-tastene 5/6 er bekreftet; 7/8 (Armory/Constructor) er
+  # standard utvalgstaster - verifiser in-game med dry_run.
   build:
-    # Recycler (trykk 5):
+    # --- Recycler (trykk 5) ---
     scavenger:   ["5", "1"]
-    turret:      ["5", "4"]
-    fighter:     ["5", "5"]   # CCA-speideren ("Fighter" i menyen)
+    repair:      ["5", "2"]   # service/repair
+    ammo:        ["5", "3"]   # service/ammo
+    turret:      ["5", "4"]   # CCA: Pak
+    fighter:     ["5", "5"]   # CCA: Flanker
     scout:       ["5", "5"]   # alias for fighter
-    armory:      ["5", "7"]   # bygning
-    constructor: ["5", "8"]
-    factory:     ["5", "6"]   # bygning
-    # Factory (trykk 6):
-    tank:        ["6", "1"]
-    light_tank:  ["6", "2"]
-    howitzer:    ["6", "3"]
-    minelayer:   ["6", "4"]
-    rocket_tank: ["6", "5"]
-    apc:         ["6", "6"]
-    bomber:      ["6", "7"]
-    thunderbolt: ["6", "7"]   # alias for bomber
-    walker:      ["6", "8"]
-    fury:        ["6", "9"]
+    factory:     ["5", "6"]   # bygning: Unit Factory (MUF)
+    armory:      ["5", "7"]   # bygning: SLF
+    constructor: ["5", "8"]   # bygning: Erector
 
-  # --- PRODUKSJON fra Armory (våpen/spesialvåpen) ------------------
-  # ANSLAG - send meg Armory-menyen så fyller jeg inn riktige tall.
+    # --- Unit Factory (trykk 6) ---
+    tank:        ["6", "1"]   # CCA: Czar
+    light_tank:  ["6", "2"]   # CCA: Stoli
+    tug:         ["6", "3"]   # CCA: Tractor
+    howitzer:    ["6", "4"]   # CCA: Cannoneer
+    minelayer:   ["6", "5"]   # CCA: Molotov
+    rocket_tank: ["6", "6"]   # CCA: Tusker
+    apc:         ["6", "7"]
+    bomber:      ["6", "8"]   # CCA: Grendel
+    thunderbolt: ["6", "8"]   # alias for bomber
+    walker:      ["6", "9"]   # CCA: Golem
+
+    # --- Constructor (trykk 8) -> sikt + Mellomrom for plassering ---
+    # NB: bot trykker bare produsent+slot; DU må sikte og trykke
+    # SPACE for å faktisk plassere bygningen (1+2 er Follow/Go to nav).
+    power_generator: ["8", "3"]
+    gun_tower:       ["8", "4"]
+    comm_tower:      ["8", "5"]
+    barracks:        ["8", "6"]
+    silo:            ["8", "7"]
+    supply_depot:    ["8", "8"]
+    hangar:          ["8", "9"]
+
+  # --- PRODUKSJON fra Armory (trykk 7) ----------------------------
+  # Direkte slots 1-4; våpen ligger i UNDERMENYER (3-tasts sekvens).
   produce:
-    day_wrecker: ["7", "1"]   # ANSLAG (Armory bygges på Recycler-slot 7)
-    weapon:      ["7", "2"]   # ANSLAG
+    # Direkte:
+    armory_repair: ["7", "1"]
+    armory_ammo:   ["7", "2"]
+    nav_beacon:    ["7", "3"]   # Armory flinger nav (koster 1 scrap)
+    day_wrecker:   ["7", "4"]   # kraftig spesialvåpen
+    # Cannons (undermeny 6):
+    minigun:       ["7", "6", "1"]
+    at_stabber:    ["7", "6", "2"]
+    sp_stabber:    ["7", "6", "3"]
+    mag_cannon:    ["7", "6", "4"]
+    flash_cannon:  ["7", "6", "5"]
+    # Rockets (undermeny 7):
+    shadow_missile:       ["7", "7", "1"]
+    thermal_hornet:       ["7", "7", "2"]
+    comet_cruise_missile: ["7", "7", "3"]
+    tag_cannon:           ["7", "7", "4"]
+    sandbag_missile:      ["7", "7", "5"]
+    rocket_bomb:          ["7", "7", "6"]
+    # Mortars (undermeny 8):
+    mortar:        ["7", "8", "1"]
+    mdm:           ["7", "8", "2"]
+    pop_gun:       ["7", "8", "3"]
+    splinter:      ["7", "8", "4"]
+    # Special (undermeny 9):
+    solar_flare:         ["7", "9", "1"]
+    m_curtain:           ["7", "9", "2"]
+    mits:                ["7", "9", "3"]
+    proximity_mine:      ["7", "9", "4"]
+    thumper:             ["7", "9", "5"]
+    red_field_generator: ["7", "9", "6"]
+    phantom_vir:         ["7", "9", "7"]
+    site_camera:         ["7", "9", "8"]
 
   # --- ORDRE til valgte enheter (gis ETTER select) -----------------
   # VERIFISERT fra enhetens ordremeny. Menyen vises når enheter er
