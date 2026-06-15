@@ -32,12 +32,25 @@ controls:
 dry_run: true
 
 # Sekunder før en enhet regnes som ferdigbygd (timer-basert).
-# VERIFISER disse i spillet - de er anslag.
+# NB: BZ98 har ingen fast byggetid - produksjon trekker scrap fra
+# bassenget med fast rate, så tunge/dyre enheter tar lengre tid, og
+# alt tar lengre tid hvis du har lite scrap. Disse er ANSLAG skalert
+# etter enhetens vekt/kostnad. Juster opp hvis enheten ikke er ferdig
+# når stemmen sier den er det.
 build_times:
-  scout: 12
-  tank: 20
-  thunderbolt: 16
-  default: 15
+  # Recycler-enheter (lette/billige):
+  scout: 12          # Razor - lett speider
+  scavenger: 14
+  constructor: 18
+  turret: 14
+  # Factory-enheter (tyngre/dyrere):
+  tank: 22           # Sabre
+  rocket_tank: 24
+  bomber: 24         # (config-navn "thunderbolt" peker på samme)
+  thunderbolt: 24
+  walker: 35         # Grizzly - tung
+  howitzer: 30
+  default: 18
 
 # -------------------------------------------------------------
 #  TASTESEKVENSER for Battlezone 98 sitt command interface.
