@@ -35,19 +35,24 @@ dry_run: true
 # Hver enhet har en FAST byggetid i BZ98. Verdiene under er foreløpige
 # ANSLAG - bytt dem ut med de eksakte tidene du leser av in-game.
 build_times:
-  # Recycler-enheter (lette/billige):
-  scout: 12          # Razor - lett speider
-  scavenger: 14
-  constructor: 18
-  turret: 14
-  # Factory-enheter (tyngre/dyrere):
-  tank: 22           # Sabre
-  rocket_tank: 24
-  bomber: 24         # (config-navn "thunderbolt" peker på samme)
-  thunderbolt: 24
-  walker: 35         # Grizzly - tung
-  howitzer: 30
-  default: 18
+  # Recycler:
+  scavenger: 5       # bekreftet
+  turret: 6          # anslag
+  fighter: 5         # anslag (CCA-speider)
+  scout: 5           # alias
+  constructor: 8     # anslag
+  # Factory:
+  tank: 10           # bekreftet
+  light_tank: 7      # bekreftet
+  howitzer: 15       # bekreftet
+  minelayer: 7       # anslag
+  rocket_tank: 10    # bekreftet
+  apc: 8             # anslag
+  bomber: 20         # bekreftet
+  thunderbolt: 20    # alias for bomber
+  walker: 15         # bekreftet
+  fury: 25           # anslag (tyngst)
+  default: 10
 
 # -------------------------------------------------------------
 #  TASTESEKVENSER for Battlezone 98 sitt command interface.
@@ -78,37 +83,53 @@ keymap:
     last_built:    ["ctrl+1"]  # nybygde kampenheter havner her
 
   # --- BYGGING fra Recycler (5) / Factory (6) ----------------------
-  # [ <produsent-tast>, <plass-i-meny> ]. Produsent-tast er sikker,
-  # plass-i-meny er ANSLAG - les av din egen meny og rett tallet.
+  # VERIFISERT fra in-game-menyene (CCA). [ <produsent-tast>, <plass> ].
   build:
-    scout:       ["5", "2"]   # Recycler (slot 1 er ofte Scavenger)
-    scavenger:   ["5", "1"]   # ANSLAG
-    constructor: ["5", "3"]   # ANSLAG
-    turret:      ["5", "4"]   # ANSLAG
-    tank:        ["6", "1"]   # Factory
-    bomber:      ["6", "2"]   # ANSLAG
-    thunderbolt: ["6", "2"]   # alias for bomber
-    rocket_tank: ["6", "3"]   # ANSLAG
-    walker:      ["6", "4"]   # ANSLAG (Grizzly)
-    howitzer:    ["6", "5"]   # ANSLAG
+    # Recycler (trykk 5):
+    scavenger:   ["5", "1"]
+    turret:      ["5", "4"]
+    fighter:     ["5", "5"]   # CCA-speideren ("Fighter" i menyen)
+    scout:       ["5", "5"]   # alias for fighter
+    armory:      ["5", "7"]   # bygning
+    constructor: ["5", "8"]
+    factory:     ["5", "6"]   # bygning
+    # Factory (trykk 6):
+    tank:        ["6", "1"]
+    light_tank:  ["6", "2"]
+    howitzer:    ["6", "3"]
+    minelayer:   ["6", "4"]
+    rocket_tank: ["6", "5"]
+    apc:         ["6", "6"]
+    bomber:      ["6", "7"]
+    thunderbolt: ["6", "7"]   # alias for bomber
+    walker:      ["6", "8"]
+    fury:        ["6", "9"]
 
   # --- PRODUKSJON fra Armory (våpen/spesialvåpen) ------------------
-  # Samme prinsipp: [ <armory-tast>, <plass-i-meny> ]. ANSLAG.
+  # ANSLAG - send meg Armory-menyen så fyller jeg inn riktige tall.
   produce:
-    day_wrecker: ["8", "1"]   # ANSLAG - kraftig spesialvåpen
-    weapon:      ["8", "2"]   # ANSLAG - generisk "lag våpen"
+    day_wrecker: ["7", "1"]   # ANSLAG (Armory bygges på Recycler-slot 7)
+    weapon:      ["7", "2"]   # ANSLAG
 
   # --- ORDRE til valgte enheter (gis ETTER select) -----------------
-  # follow/hold er bekreftede defaults; resten er ANSLAG.
+  # VERIFISERT fra enhetens ordremeny. Menyen vises når enheter er
+  # valgt - ingen Tab nødvendig (Tab = Cancel der).
   commands:
-    follow:   ["1"]   # følg meg (bekreftet)
-    go:       ["2"]   # dra dit du ser / til nav  (ANSLAG)
-    attack:   ["3"]   # angrip målet (ANSLAG)
-    hold:     ["4"]   # hold posisjon (bekreftet)
-    stop:     ["4"]   # samme som hold
-    defend:   ["5"]   # forsvar (ANSLAG)
-    get:      ["6"]   # plukk opp / hent (ANSLAG)
-    scavenge: ["7"]   # send for å samle scrap (ANSLAG)
+    follow:       ["1"]   # Follow Me - følger deg, rykker fram mot fiender
+    go:           ["2"]   # Go to Nav
+    attack:       ["3", "1"]  # Attack: 3 åpner liste over nærmeste fiender,
+                              # 1 = velg den nærmeste (øverst). Endre 2. tall
+                              # for å treffe lenger ned i lista.
+    pickup:       ["4"]   # Pick Me Up (grået ut når ikke relevant)
+    repair:       ["5"]   # Get Repair (grået ut)
+    reload:       ["6"]   # Get Reload (grået ut)
+    hunt:         ["7"]   # Hunt - søk opp fiender
+    follow_close: ["8"]   # Follow Close
+    defend:       ["9"]   # Defend - holder posisjon
+    hold:         ["9"]   # BZ98 har ingen egen "hold"; Defend holder
+    stop:         ["9"]   # samme
+    recycle:      ["0"]   # Recycle - send enhet til gjenvinning
+    scavenge:     ["2"]   # scavengers samler ved å dra til nav (Go to Nav)
 
   # --- NAV-BEACON --------------------------------------------------
   # Plasser en navigasjons-beacon der du ser.
