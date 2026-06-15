@@ -58,12 +58,21 @@ timer-based "unit is finished" estimates that drive `WaitStep`).
 - `dry_run: true` (default) means **no real key presses** — `executor.py` only
   prints what it *would* press. Always keep this on until key sequences are
   verified in-game; only the user can flip it to `false`.
-- `keymap.build.<unit>` is `[<producer key>, <menu slot>]`. In BZ98: **5** opens
-  the Recycler build menu, **6** the Factory. The producer key is a known BZ98
-  default; the menu-slot number is an *estimate* the user must confirm in-game.
-- `keymap.select_last_built` uses a chord string (`"ctrl+1"` = all offensive
-  units). Chords are written with `+` and handled by `executor.py:_press_chord`;
-  plain entries are single key taps.
+- `build_times.<unit>` are seconds. Each unit has a **fixed** build time in BZ98
+  (not scrap-dependent); the current values are estimates pending the user's
+  in-game numbers.
+- The `keymap` is **data-driven** — adding/changing a command means editing
+  config, and `commands.py:CommandPlanner` consumes these sections generically:
+  - `keymap.build.<unit>` / `keymap.produce.<item>` = `[<producer/armory key>, <menu slot>]`
+    (5 = Recycler, 6 = Factory; producer keys are BZ98 defaults, slots are estimates).
+  - `keymap.select.<target>` = how to select a unit group before an order
+    (`all_offensive` = `ctrl+1`, etc.). Orders carry an optional `target`.
+  - `keymap.commands.<action>` = the order key (`follow`/`hold` are confirmed
+    BZ98 defaults; the rest are estimates). `command_menu_key` (e.g. `tab`) is
+    pressed first if set; `nav_beacon` is a standalone key.
+- Chord strings use `+` (e.g. `"ctrl+1"`), handled by `executor.py:_press_chord`;
+  plain entries are single key taps. `DEFAULT_TARGET`/`CONFIRM` in `commands.py`
+  set the fallback selection and spoken reply per action.
 
 ## Gemini specifics (verify model IDs before changing)
 

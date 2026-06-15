@@ -32,11 +32,8 @@ controls:
 dry_run: true
 
 # Sekunder før en enhet regnes som ferdigbygd (timer-basert).
-# NB: BZ98 har ingen fast byggetid - produksjon trekker scrap fra
-# bassenget med fast rate, så tunge/dyre enheter tar lengre tid, og
-# alt tar lengre tid hvis du har lite scrap. Disse er ANSLAG skalert
-# etter enhetens vekt/kostnad. Juster opp hvis enheten ikke er ferdig
-# når stemmen sier den er det.
+# Hver enhet har en FAST byggetid i BZ98. Verdiene under er foreløpige
+# ANSLAG - bytt dem ut med de eksakte tidene du leser av in-game.
 build_times:
   # Recycler-enheter (lette/billige):
   scout: 12          # Razor - lett speider
@@ -55,37 +52,64 @@ build_times:
 # -------------------------------------------------------------
 #  TASTESEKVENSER for Battlezone 98 sitt command interface.
 #
-#  Slik fungerer bygging i BZ98 Redux (NSDF-standardoppsett):
-#    Talltast 5  = åpner RECYCLER sin byggmeny
-#    Talltast 6  = åpner FACTORY sin byggmeny
-#    Talltast 7  = åpner CONSTRUCTOR (bygninger)
-#  Når menyen er åpen velger du enheten med tallet for PLASSEN den
-#  har i lista (kostnaden vises i blått til høyre). Lette enheter
-#  (scout/scavenger) bygges fra Recycler; tunge (tank/bomber) fra Factory.
+#  Slik virker BZ98: du VELGER enheter (talltaster / Ctrl+grupper),
+#  så GIR du en ordre (talltast, ev. åpnet med Tab først). Bygging
+#  skjer ved å åpne en produsents meny (5=Recycler, 6=Factory) og
+#  velge enheten med tallet for PLASSEN den har i lista.
 #
-#  build.<enhet> = [ <produsent-tast>, <plass-i-meny> ]
-#  >>> Produsent-tasten (5/6) er BZ98-standard. Det ANDRE tallet er
-#      et kvalifisert ANSLAG for plassen i menyen - les av din egen
-#      meny in-game og rett tallet. dry_run: true gjør dette helt trygt:
-#      du ser rekkefølgen i terminalen før noe sendes til spillet. <<<
+#  ALT styres herfra - legg til/endre kommandoer uten å røre koden.
+#  Taller merket ANSLAG må verifiseres in-game (dry_run gjør det trygt:
+#  du ser hele sekvensen i terminalen før noe sendes til spillet).
+#  Bekreftede BZ98-defaults: follow=1, hold=4. Chord skrives med "+".
 # -------------------------------------------------------------
 keymap:
-  # Velg din egen enhet (så "follow me" gjelder deg)
-  select_self: ["f1"]
+  # Må ordremenyen åpnes før du trykker ordretallet? BZ98 bruker Tab i
+  # noen oppsett. La stå tom ("") hvis ordretallet virker direkte.
+  command_menu_key: ""        # sett til "tab" hvis ordrene ikke virker uten
 
-  # Bygging - produsent-tast er sikker, plass-i-meny må verifiseres in-game:
+  # --- HVEM ordren gjelder (velges FØR kommandoen) -----------------
+  # Brukes av "target" i ordrene. Ctrl+N = enhetsgrupper i BZ98.
+  select:
+    self:          ["f1"]      # din egen enhet
+    all_offensive: ["ctrl+1"]  # alle angreps-enheter (bekreftet)
+    all_defensive: ["ctrl+2"]  # alle forsvars-enheter (bekreftet)
+    all_utility:   ["ctrl+3"]  # scavengers/constructors (bekreftet)
+    scavengers:    ["ctrl+3"]  # samme gruppe som utility
+    last_built:    ["ctrl+1"]  # nybygde kampenheter havner her
+
+  # --- BYGGING fra Recycler (5) / Factory (6) ----------------------
+  # [ <produsent-tast>, <plass-i-meny> ]. Produsent-tast er sikker,
+  # plass-i-meny er ANSLAG - les av din egen meny og rett tallet.
   build:
-    scout:       ["5", "2"]   # Recycler -> anslått plass 2 (slot 1 er ofte Scavenger)
-    tank:        ["6", "1"]   # Factory  -> anslått plass 1
-    thunderbolt: ["6", "2"]   # Factory  -> anslått plass 2 (bomber)
+    scout:       ["5", "2"]   # Recycler (slot 1 er ofte Scavenger)
+    scavenger:   ["5", "1"]   # ANSLAG
+    constructor: ["5", "3"]   # ANSLAG
+    turret:      ["5", "4"]   # ANSLAG
+    tank:        ["6", "1"]   # Factory
+    bomber:      ["6", "2"]   # ANSLAG
+    thunderbolt: ["6", "2"]   # alias for bomber
+    rocket_tank: ["6", "3"]   # ANSLAG
+    walker:      ["6", "4"]   # ANSLAG (Grizzly)
+    howitzer:    ["6", "5"]   # ANSLAG
 
-  # Standardkommandoer (BZ98-defaults):
-  follow_me: ["1"]
-  hold:      ["4"]
-  attack:    ["3"]   # verifiser
-  stop:      ["4"]   # "hold" fungerer som stopp
+  # --- PRODUKSJON fra Armory (våpen/spesialvåpen) ------------------
+  # Samme prinsipp: [ <armory-tast>, <plass-i-meny> ]. ANSLAG.
+  produce:
+    day_wrecker: ["8", "1"]   # ANSLAG - kraftig spesialvåpen
+    weapon:      ["8", "2"]   # ANSLAG - generisk "lag våpen"
 
-  # Velg nylig bygde enheter før "follow me". CTRL+1 = alle offensive
-  # enheter i BZ98, som inkluderer nybygde kampenheter. Skrives som
-  # chord med "+". Bytt til ["f1"] e.l. hvis du heller vil styre deg selv.
-  select_last_built: ["ctrl+1"]
+  # --- ORDRE til valgte enheter (gis ETTER select) -----------------
+  # follow/hold er bekreftede defaults; resten er ANSLAG.
+  commands:
+    follow:   ["1"]   # følg meg (bekreftet)
+    go:       ["2"]   # dra dit du ser / til nav  (ANSLAG)
+    attack:   ["3"]   # angrip målet (ANSLAG)
+    hold:     ["4"]   # hold posisjon (bekreftet)
+    stop:     ["4"]   # samme som hold
+    defend:   ["5"]   # forsvar (ANSLAG)
+    get:      ["6"]   # plukk opp / hent (ANSLAG)
+    scavenge: ["7"]   # send for å samle scrap (ANSLAG)
+
+  # --- NAV-BEACON --------------------------------------------------
+  # Plasser en navigasjons-beacon der du ser.
+  nav_beacon: ["n"]   # ANSLAG - verifiser tasten for nav beacon

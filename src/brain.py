@@ -23,10 +23,20 @@ from commands import ORDERS_TOOL
 
 SYSTEM_INSTRUCTION = (
     "Du er en kommando-tolk for spillet Battlezone. Brukeren snakker norsk "
-    "og gir militære ordre til enhetene sine. Oversett det de sier til ett "
-    "eller flere strukturerte kall til execute_orders, i riktig rekkefølge. "
-    "Eksempel: 'bygg meg to speidere og la dem følge meg' blir to ordre: "
-    "først build (unit=scout, count=2), så follow. "
+    "og gir militære ordre til enhetene sine. Oversett ALT de sier til ett "
+    "eller flere strukturerte kall til execute_orders, i riktig rekkefølge.\n"
+    "Du kan uttrykke hele repertoaret via action: build (bygg enhet), "
+    "produce (lag våpen/spesial i Armory), follow, go (flytt), attack, hold, "
+    "stop, defend, scavenge (samle scrap), get (plukk opp), nav (nav-beacon).\n"
+    "Bruk 'target' for HVEM ordren gjelder: si f.eks. 'be alle om å følge meg' "
+    "-> follow med target=all_offensive; 'scavengerne skal samle' -> scavenge "
+    "med target=scavengers.\n"
+    "Eksempler:\n"
+    "  'bygg to speidere og la dem følge meg' -> build(unit=scout,count=2), "
+    "follow(target=last_built)\n"
+    "  'alle enheter angrip' -> attack(target=all_offensive)\n"
+    "  'lag en day wrecker' -> produce(unit=day_wrecker)\n"
+    "  'sett en nav-beacon' -> nav\n"
     "Hvis du ikke forstår en kommando, ikke kall verktøyet."
 )
 

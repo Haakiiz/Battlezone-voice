@@ -29,6 +29,29 @@ vil. Tastene bor i `config.yaml`, så du kan endre dem uten å røre koden.
 | Tale → handling | `gemini-3.5-flash` (hører lyd + function calling) |
 | Stemme tilbake | `gemini-3.1-flash-tts-preview` |
 
+## Kommandoer du kan gi med stemmen
+
+Alt i BZ98s kommandomeny er tilgjengelig — Gemini oversetter fritt norsk
+til disse handlingene (`commands.py:ORDERS_TOOL`):
+
+| Du sier (eksempel) | Handling |
+|--------------------|----------|
+| "bygg to speidere" | `build` (Recycler/Factory) |
+| "lag en day wrecker" | `produce` (Armory-våpen) |
+| "alle skal følge meg" | `follow` |
+| "dra dit borte" / "til navet" | `go` |
+| "angrip basen" | `attack` |
+| "hold posisjon" / "stopp" | `hold` / `stop` |
+| "forsvar her" | `defend` |
+| "scavengerne skal samle scrap" | `scavenge` |
+| "plukk opp den" | `get` |
+| "sett en nav-beacon" | `nav` |
+
+Du kan også styre **hvem** ordren gjelder ("be *alle* følge meg",
+"*scavengerne* skal samle") — det blir `target` i ordren. Hvilke taster
+hver handling sender bor i `config.yaml` under `keymap`, så du kan legge
+til eller endre kommandoer uten å røre koden.
+
 ## Oppsett (engangs, ~5 min)
 
 1. Installer [Python 3.11+](https://www.python.org/downloads/) (huk av "Add to PATH").
